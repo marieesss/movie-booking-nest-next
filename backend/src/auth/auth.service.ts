@@ -54,7 +54,7 @@ export class AuthService {
     
   }
 
-  async login(loginAuthDto: LoginAuthDto){
+  async login(loginAuthDto: LoginAuthDto) : Promise<{message : String, data : {name : string, surname : string, token : string, email : string}}>{
     try {
     // Find user by email 
     const user = await this.authRepository.findOneBy({email : loginAuthDto.email})
@@ -81,7 +81,7 @@ export class AuthService {
     // Create token
     const payload = { sub: user.email };
     return {
-      message : "user created",
+      message : "Login successful",
       data : {
         token : await this.jwtService.signAsync(payload), 
         name : user.name,
@@ -99,6 +99,11 @@ export class AuthService {
       throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+  }
+
+
+  async essai(req):Promise<string>{
+    return `Successfully logged + ${req.user}`
   }
 
 }
