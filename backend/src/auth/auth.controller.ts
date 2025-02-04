@@ -4,6 +4,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginAuthDto } from './dto/login.dto';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from './auth.gard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -19,6 +20,7 @@ export class AuthController {
     return this.authService.login(createAuthDto);
   }
 
+  @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Get('userRoute')
   essai(@Request() req) {
