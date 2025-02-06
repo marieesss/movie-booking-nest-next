@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthEntity } from 'src/auth/entities/auth.entity';
+import { ReservationEntity } from 'src/reservations/entities/reservation.entity';
 
 @Module({
   imports: [

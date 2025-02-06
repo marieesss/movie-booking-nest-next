@@ -35,7 +35,6 @@ export class MoviesService {
          const res =  fetch(finalUrl, options)
           .then(res => res.json())
           .then(json => {
-            console.log(json)
             return json
         })
           .catch(err => console.error(err));
