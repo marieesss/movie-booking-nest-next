@@ -109,7 +109,26 @@ export class ReservationsService {
     return `This action updates a #${id} reservation`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} reservation`;
+  async remove(id: number) {
+
+    try {
+      const res = await this.reservationRepository.findOneBy({id : id})
+
+      if(!res){
+        throw new HttpException({
+          status: HttpStatus.BAD_REQUEST,
+          error: 'res not found',
+        }, HttpStatus.BAD_REQUEST)
+      }
+      await this.reservationRepository.delete(res)
+
+      return {message : "Deleted"}
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
   }
 }

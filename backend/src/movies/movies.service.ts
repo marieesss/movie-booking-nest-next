@@ -19,6 +19,16 @@ export class MoviesService {
         return response
     }
 
+
+    
+    async getMovieById(id : string){
+      let endpoint = `/movie/${id}`
+
+      const response = await this.ApiRequest(endpoint)
+
+      return response
+  }
+
     async ApiRequest (prefix : string){
 
         const baseUrl = 'https://api.themoviedb.org/3'

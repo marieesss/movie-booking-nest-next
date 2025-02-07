@@ -25,6 +25,7 @@ export class ReservationsController {
     return this.reservationsService.findAll(req);
   }
 
+  @ApiBearerAuth()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.reservationsService.findOne(+id);
@@ -35,6 +36,7 @@ export class ReservationsController {
     return this.reservationsService.update(+id, updateReservationDto);
   }
 
+  @ApiBearerAuth()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.reservationsService.remove(+id);

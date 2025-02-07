@@ -13,4 +13,12 @@ export class MoviesController {
     async essai(@Query('page') page: string = '1', @Query('search') search ?: string, @Query('sort') sort ?: string) {
     return await this.moviesService.getMovies(page, search, sort);
     }
+    
+
+    @ApiQuery({ name: 'movieId', type : String, required : false })
+    @Get('details')
+    async getMovieById(@Query('movieId') movieId: string = '1') {
+    return await this.moviesService.getMovieById(movieId);
+    }
+
 }
