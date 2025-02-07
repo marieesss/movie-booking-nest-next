@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { getAuthToken, removeAuthToken } from "@/utils/cookies";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -26,15 +27,15 @@ const Header = () => {
       <nav>
         <ul className="flex space-x-4">
           <li>
-            <a href="/" className="hover:underline">Accueil</a>
+            <Link href="/" className="hover:underline">Accueil </Link>
           </li>
           <li>
-            <a href="/movies" className="hover:underline">Films</a>
+            <Link href="/movies" className="hover:underline">Films</Link>
           </li>
           {isAuthenticated ? (
             <>
               <li>
-                <a href="/reservations" className="hover:underline">Réservations</a>
+                <Link href="/reservations" className="hover:underline">Réservations</Link>
               </li>
               <li>
                 <button onClick={handleLogout} className="bg-red-500 px-4 py-2 rounded hover:bg-red-600">
@@ -44,9 +45,9 @@ const Header = () => {
             </>
           ) : (
             <li>
-              <a href="/login" className="bg-green-500 px-4 py-2 rounded hover:bg-green-600">
+              <Link href="/auth/login" className="bg-green-500 px-4 py-2 rounded hover:bg-green-600">
                 Se connecter
-              </a>
+              </Link>
             </li>
           )}
         </ul>

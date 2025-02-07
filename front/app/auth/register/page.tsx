@@ -20,7 +20,7 @@ const Register = () => {
 
 
   const validateForm = () => {
-    let newErrors: { [key: string]: string } = {};
+    const newErrors: { [key: string]: string } = {};
 
     if (!formData.email.includes("@")) newErrors.email = "Email invalide";
     if (formData.name.trim().length < 2) newErrors.name = "Nom trop court";

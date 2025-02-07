@@ -5,36 +5,56 @@ import { deleteReservation, getAllReservations } from "@/api/reservations";
 import { fetchMovieById } from "@/api/movies";
 import { getAuthToken } from "@/utils/cookies";
 
+interface Reservation {
+  id: string;
+  movieid: number;
+  bookingSlot: string;
+  movieTitle?: string;
+}
+
 const ReservationsTable = () => {
-  const [reservations, setReservations] = useState<any[]>([]);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const token = getAuthToken();
-  if (!token) {
-    setError("Utilisateur non authentifié.");
-    setLoading(false);
-    return;
-  }
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const authToken = getAuthToken();
+
+    if (!authToken) {
+      setError("Utilisateur non authentifié.");
+      setLoading(false);
+    }else{
+      setToken(authToken);
+
+    }
+
+
+
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      fetchReservations();
+    }
+  }, [token]);
 
   const fetchReservations = async () => {
+    if (!token) return;
     setLoading(true);
     setError(null);
-
-
 
     try {
       const result = await getAllReservations(token);
       if (!result.success) {
-
-          const errorMessage =
+        const errorMessage =
           typeof result.error === "object" && "error" in result.error
             ? result.error.error
             : result.error;
         setError(errorMessage || "Erreur lors de la récupération des réservations.");
       } else {
-        // Récupérer les détails des films pour chaque réservation
         const reservationsWithMovies = await Promise.all(
-          result.data.map(async (reservation: any) => {
+          result.data.map(async (reservation: Reservation) => {
             const movieDetails = await fetchMovieById(token, reservation.movieid);
             return {
               ...reservation,
@@ -42,7 +62,6 @@ const ReservationsTable = () => {
             };
           })
         );
-
         setReservations(reservationsWithMovies);
       }
     } catch (err) {
@@ -53,31 +72,25 @@ const ReservationsTable = () => {
     setLoading(false);
   };
 
-  useEffect(() => {
- 
-    fetchReservations();
-  }, []);
+  const CancelBooking = async (id: string) => {
+    if (!token) return;
 
-  
-  const CancelBooking = async (id : string) =>{
-    const result = await deleteReservation(id, token)
+    const result = await deleteReservation(id, token);
 
     if (!result.success) {
-        const errorMessage =
-          typeof result.error === "object" && "error" in result.error
-            ? result.error.error
-            : result.error;
-        console.error(errorMessage)
-        return;
-      }
-      
-      if (result.data) {
+      const errorMessage =
+        typeof result.error === "object" && "error" in result.error
+          ? result.error.error
+          : result.error;
+      console.error(errorMessage);
+      return;
+    }
 
-        console.log(result.data)
-        fetchReservations()
-    
-      }
-  }
+    if (result.data) {
+      console.log(result.data);
+      fetchReservations();
+    }
+  };
 
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white shadow-md rounded-lg">
@@ -109,9 +122,8 @@ const ReservationsTable = () => {
                   <td className="px-4 py-2">
                     {new Date(reservation.bookingSlot).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </td>
-
                   <td className="px-4 py-2">
-                    <button onClick={()=>CancelBooking(reservation.id)}> X </button>
+                    <button onClick={() => CancelBooking(reservation.id)}> X </button>
                   </td>
                 </tr>
               ))}
